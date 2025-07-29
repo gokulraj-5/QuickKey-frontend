@@ -28,7 +28,7 @@ captureBtn.addEventListener('click', async () => {
 
   answerBox.textContent = "Getting answer from Gemini...";
 
-  const res = await fetch('https://quickkey-backend-abc1.onrender.com/predict', {  // ✅ Full absolute URL
+  const res = await fetch('https://quickkey-backend.onrender.com/predict', {  // ✅ Full absolute URL
 
 
     method: 'POST',
