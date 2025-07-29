@@ -6,7 +6,7 @@ const answerBox = document.getElementById('answer');
 navigator.mediaDevices.getUserMedia({
   video: { facingMode: { exact: "environment" } }
 })
-
+ 
   .then(stream => video.srcObject = stream)
   .catch(err => console.error("Camera Error:", err));
 
@@ -28,7 +28,8 @@ captureBtn.addEventListener('click', async () => {
 
   answerBox.textContent = "Getting answer from Gemini...";
 
-  const res = await fetch('https://quickkey-backend.onrender.com/predict', {
+  const res = await fetch('https://quickkey-backend-abc1.onrender.com/predict', {  // ✅ Full absolute URL
+
 
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
