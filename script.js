@@ -1,12 +1,12 @@
 const video = document.getElementById('camera');
 const captureBtn = document.getElementById('capture');
 const answerBox = document.getElementById('answer');
-const toggleCameraBtn = document.getElementById('toggleCameraBtn'); // Add this button in HTML
+const toggleCameraBtn = document.getElementById('toggleCameraBtn');
 
 let useFrontCamera = false;
 let currentStream;
 
-// 📸 Start camera with selected facing mode
+// Start the camera
 async function startCamera() {
   if (currentStream) {
     currentStream.getTracks().forEach(track => track.stop());
@@ -15,27 +15,29 @@ async function startCamera() {
   try {
     const constraints = {
       video: {
-        facingMode: useFrontCamera ? "user" : "environment"
-      }
+        facingMode: useFrontCamera ? 'user' : 'environment'
+      },
+      audio: false
     };
 
     currentStream = await navigator.mediaDevices.getUserMedia(constraints);
     video.srcObject = currentStream;
   } catch (err) {
-    console.error("Camera Error:", err);
+    console.error("Camera error:", err);
+    alert("Unable to access camera. Please check permissions or try a different device.");
   }
 }
 
-// 🔁 Toggle front/rear camera
+// Toggle between front and rear camera
 toggleCameraBtn.addEventListener('click', () => {
   useFrontCamera = !useFrontCamera;
   startCamera();
 });
 
-// 🟢 Start rear camera by default on load
+// Start camera on load
 startCamera();
 
-// 📷 Capture image and get answer
+// Capture image and fetch answer
 captureBtn.addEventListener('click', async () => {
   const canvas = document.createElement('canvas');
   canvas.width = video.videoWidth;
@@ -64,7 +66,7 @@ captureBtn.addEventListener('click', async () => {
     const data = await res.json();
     answerBox.textContent = data.answer;
   } catch (err) {
-    console.error("Gemini API Error:", err);
-    answerBox.textContent = "Something went wrong. Try again.";
+    console.error("Fetch error:", err);
+    answerBox.textContent = "Something went wrong.";
   }
 });
