@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.viewfinder, .answer-box {
+  padding: 10px;
+}
+
+.viewfinder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #222;
+  color: white;
+}
+
+.viewfinder video {
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.answer-box {
+  background: white;
+  border-top: 1px solid #ccc;
+  height: 30%;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+  }
+
+  .viewfinder {
+    width: 65%;
+  }
+
+  .answer-box {
+    width: 35%;
+    height: 100%;
+    border-left: 1px solid #ccc;
+  }
+}
