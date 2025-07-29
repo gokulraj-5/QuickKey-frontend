@@ -3,7 +3,10 @@ const captureBtn = document.getElementById('capture');
 const answerBox = document.getElementById('answer');
 
 // Start camera
-navigator.mediaDevices.getUserMedia({ video: true })
+navigator.mediaDevices.getUserMedia({
+  video: { facingMode: { exact: "environment" } }
+})
+
   .then(stream => video.srcObject = stream)
   .catch(err => console.error("Camera Error:", err));
 
