@@ -1,15 +1,41 @@
 const video = document.getElementById('camera');
 const captureBtn = document.getElementById('capture');
 const answerBox = document.getElementById('answer');
+const toggleCameraBtn = document.getElementById('toggleCameraBtn'); // Add this button in HTML
 
-// Start camera
-navigator.mediaDevices.getUserMedia({
-  video: { facingMode: { exact: "environment" } }
-})
- 
-  .then(stream => video.srcObject = stream)
-  .catch(err => console.error("Camera Error:", err));
+let useFrontCamera = false;
+let currentStream;
 
+// 📸 Start camera with selected facing mode
+async function startCamera() {
+  if (currentStream) {
+    currentStream.getTracks().forEach(track => track.stop());
+  }
+
+  try {
+    const constraints = {
+      video: {
+        facingMode: useFrontCamera ? "user" : "environment"
+      }
+    };
+
+    currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+    video.srcObject = currentStream;
+  } catch (err) {
+    console.error("Camera Error:", err);
+  }
+}
+
+// 🔁 Toggle front/rear camera
+toggleCameraBtn.addEventListener('click', () => {
+  useFrontCamera = !useFrontCamera;
+  startCamera();
+});
+
+// 🟢 Start rear camera by default on load
+startCamera();
+
+// 📷 Capture image and get answer
 captureBtn.addEventListener('click', async () => {
   const canvas = document.createElement('canvas');
   canvas.width = video.videoWidth;
@@ -28,14 +54,17 @@ captureBtn.addEventListener('click', async () => {
 
   answerBox.textContent = "Getting answer from Gemini...";
 
-  const res = await fetch('https://quickkey-backend.onrender.com/predict', {  // ✅ Full absolute URL
+  try {
+    const res = await fetch('https://quickkey-backend.onrender.com/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: extractedText })
+    });
 
-
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question: extractedText })
-  });
-
-  const data = await res.json();
-  answerBox.textContent = data.answer;
+    const data = await res.json();
+    answerBox.textContent = data.answer;
+  } catch (err) {
+    console.error("Gemini API Error:", err);
+    answerBox.textContent = "Something went wrong. Try again.";
+  }
 });
